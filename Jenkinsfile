@@ -8,6 +8,16 @@ pipeline {
             }
         }
 
+        stage('Install Python3') {
+            steps {
+                sh '''
+                sudo apt-get update
+                sudo apt-get install -y python3
+                python3 --version
+                '''
+            }
+        }
+
         stage('Prepare Scripts') {
             steps {
                 sh 'chmod +x smoke.sh acceptance.sh'
