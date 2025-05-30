@@ -8,6 +8,12 @@ pipeline {
             }
         }
 
+        stage('Prepare Scripts') {
+            steps {
+                sh 'chmod +x smoke.sh acceptance.sh'
+            }
+        }
+
         stage('Staging') {
             steps {
                 echo 'Running staging tests...'
