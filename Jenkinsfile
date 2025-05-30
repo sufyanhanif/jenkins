@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'python:3.9' }
+    }
 
     stages {
         stage('Checkout') {
@@ -17,7 +19,6 @@ pipeline {
         stage('Staging') {
             steps {
                 echo 'Running staging tests...'
-
                 sh './smoke.sh'
                 sh './acceptance.sh'
             }
