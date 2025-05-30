@@ -1,20 +1,12 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'python:3.9' }
+    }
 
     stages {
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/sufyanhanif/jenkins.git', branch: 'main'
-            }
-        }
-
-        stage('Install Python3') {
-            steps {
-                sh '''
-                apt-get update
-                apt-get install -y python3
-                python3 --version
-                '''
             }
         }
 
@@ -26,7 +18,6 @@ pipeline {
 
         stage('Staging') {
             steps {
-                echo 'Running staging tests...'
                 sh './smoke.sh'
                 sh './acceptance.sh'
             }
