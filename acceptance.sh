@@ -1,9 +1,10 @@
-#!/bin/bash
-echo "Running acceptance tests..."
-if python3 app.py | grep -q "Hello World"; then
-  echo "Acceptance test passed"
-  exit 0
-else
-  echo "Acceptance test failed"
-  exit 1
-fi
+import requests
+
+def test_homepage():
+    response = requests.get("http://localhost:5000")
+    assert response.status_code == 200
+    assert "Hello, world!" in response.text
+
+if __name__ == "__main__":
+    test_homepage()
+    print("Acceptance test passed")

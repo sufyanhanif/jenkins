@@ -1,9 +1,19 @@
-FROM jenkins/agent:latest
+# Gunakan image Python resmi
+FROM python:3.9-slim
 
-USER root
+# Set working directory
+WORKDIR /app
 
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    ln -s /usr/bin/python3 /usr/bin/python
+# Copy requirements dan install
+COPY requirements.txt .
 
-USER jenkins
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy seluruh app
+COPY . .
+
+# Expose port aplikasi
+EXPOSE 5000
+
+# Jalankan aplikasi
+CMD ["python", "app.py"]
