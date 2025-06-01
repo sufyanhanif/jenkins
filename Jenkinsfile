@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://your.git.repo.url/here.git'
+                git branch: 'main', url: 'https://github.com/sufyanhanif/jenkins.git'
             }
         }
 
@@ -67,3 +67,5 @@ pipeline {
         }
     }
 }
+
+
