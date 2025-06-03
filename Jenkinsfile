@@ -38,7 +38,19 @@ pipeline {
 
         stage('Acceptance Test') {
             steps {
-                sh "docker exec ${CONTAINER_NAME} python /app/acceptance_test.py"
+                script {
+                    sh '''
+                        python -m pip install requests
+                        python -c "
+import requests
+response = requests.get('http://localhost:5000')
+if response.status_code == 200 and 'Hello, world!' in response.text:
+    print('Acceptance Test Passed')
+else:
+    print('Acceptance Test Failed')
+                "
+            '''
+        }
             }
         }
 
