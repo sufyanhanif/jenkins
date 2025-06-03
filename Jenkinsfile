@@ -38,8 +38,7 @@ pipeline {
 
         stage('Acceptance Test') {
             steps {
-                sh 'pip install requests'  // install requests di agent Jenkins
-                sh 'python tests/acceptance_test.py'
+                sh "docker exec ${CONTAINER_NAME} python tests/acceptance_test.py"
             }
         }
 
