@@ -49,7 +49,7 @@ pipeline {
 
         stage('Smoke Test') {
             steps {
-                sh 'python smoke_test.py'
+                sh 'python /app/smoke_test.py'
             }
         }
 
