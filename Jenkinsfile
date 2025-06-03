@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "hellow-world"
-        CONTAINER_NAME = "jenkins-python-app"
+        IMAGE_NAME = "hellow-worlds"
+        CONTAINER_NAME = "jenkins-python-apps"
         BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"  // Tambahkan timestamp
         IMAGE_TAG = "${IMAGE_NAME}:${BUILD_TIMESTAMP}"  // Gunakan timestamp pada tag image
     }
