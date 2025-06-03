@@ -4,6 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = "hellow-world"
         CONTAINER_NAME = "jenkins-python-app"
+        BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"  // Tambahkan timestamp
+        IMAGE_TAG = "${IMAGE_NAME}:${BUILD_TIMESTAMP}"  // Gunakan timestamp pada tag image
     }
 
     stages {
@@ -16,7 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:latest")
+                    docker.build("${IMAGE_TAG}")  // Gunakan tag dengan timestamp
                 }
             }
         }
@@ -24,10 +26,10 @@ pipeline {
         stage('Run Container for Tests') {
             steps {
                 script {
-                    // Jalankan container di background
+                    // Jalankan container dengan tag yang memiliki timestamp
                     sh """
                     docker rm -f ${CONTAINER_NAME} || true
-                    docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_NAME}:latest
+                    docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_TAG}
                     """
 
                     // Tunggu beberapa detik agar app siap
@@ -62,10 +64,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Untuk deploy, kita bisa jalankan container baru dengan image terbaru
-                // (atau push ke registry dan deploy ke server lain sesuai kebutuhan)
                 sh """
                 docker rm -f deployed-app || true
-                docker run -d --name deployed-app -p 5000:5000 ${IMAGE_NAME}:latest
+                docker run -d --name deployed-app -p 5000:5000 ${IMAGE_TAG}
                 """
             }
         }
