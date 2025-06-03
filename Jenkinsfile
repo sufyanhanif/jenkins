@@ -2,10 +2,11 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "sufyanha/hellow"  
-        CONTAINER_NAME = "jenkins-python-app-container"
+        LOCAL_IMAGE = "local-image"
+        DOCKER_REPO = "sufyanha/hellow"
         BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"
-        IMAGE_TAG = "${IMAGE_NAME}:${BUILD_TIMESTAMP}"
+        IMAGE_TAG = "${DOCKER_REPO}:${BUILD_TIMESTAMP}"
+        LOCAL_TAG = "${LOCAL_IMAGE}:${BUILD_TIMESTAMP}"
     }
 
     stages {
@@ -18,7 +19,17 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_TAG}")
+                    // Build image dengan tag lokal
+                    docker.build("${LOCAL_TAG}")
+                }
+            }
+        }
+
+        stage('Tag Docker Image') {
+            steps {
+                script {
+                    // Tag image lokal ke repo Docker Hub dengan tag yang sesuai
+                    sh "docker tag ${LOCAL_TAG} ${IMAGE_TAG}"
                 }
             }
         }
@@ -47,8 +58,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker rm -f ${CONTAINER_NAME} || true
-                    docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_TAG}
+                    docker rm -f jenkins-python-app-container || true
+                    docker run -d --name jenkins-python-app-container -p 5000:5000 ${IMAGE_TAG}
                     """
                     sleep 5
                 }
@@ -68,13 +79,13 @@ pipeline {
 
         stage('Smoke Test') {
             steps {
-                 sh 'python smoke.py'
+                sh 'python smoke.py'
             }
         }
 
         stage('Stop Test Container') {
             steps {
-                sh "docker rm -f ${CONTAINER_NAME}"
+                sh "docker rm -f jenkins-python-app-container"
             }
         }
 
