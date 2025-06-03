@@ -6,7 +6,6 @@ pipeline {
         CONTAINER_NAME = "jenkins-python-app"
         BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"  // Tambahkan timestamp
         IMAGE_TAG = "${IMAGE_NAME}:${BUILD_TIMESTAMP}"  // Gunakan timestamp pada tag image
-        DOCKER_REPO = "sufyanha/hellow-world"  // Ganti dengan repo Docker Hub kamu
     }
 
     stages {
@@ -24,35 +23,6 @@ pipeline {
             }
         }
 
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    // Login ke Docker Hub menggunakan kredensial yang disimpan di Jenkins
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
-                        echo "Logged in to Docker Hub"
-                    }
-                }
-            }
-        }
-
-        stage('Tag Docker Image for Docker Hub') {
-            steps {
-                script {
-                    // Tag image dengan repo Docker Hub
-                    sh "docker tag ${IMAGE_TAG} ${DOCKER_REPO}:${BUILD_TIMESTAMP}"
-                }
-            }
-        }
-
-        stage('Push Docker Image to Docker Hub') {
-            steps {
-                script {
-                    // Push image ke Docker Hub
-                    sh "docker push ${DOCKER_REPO}:${BUILD_TIMESTAMP}"
-                }
-            }
-        }
-
         stage('Run Container for Tests') {
             steps {
                 script {
@@ -61,6 +31,7 @@ pipeline {
                     docker rm -f ${CONTAINER_NAME} || true
                     docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_TAG}
                     """
+
                     // Tunggu beberapa detik agar app siap
                     sleep 5
                 }
