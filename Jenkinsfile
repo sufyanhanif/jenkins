@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "jenkins-python-app"
+        IMAGE_NAME = "sufyanha/hellow"  
         CONTAINER_NAME = "jenkins-python-app-container"
+        BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"
+        IMAGE_TAG = "${IMAGE_NAME}:${BUILD_TIMESTAMP}"
     }
 
     stages {
@@ -16,7 +18,27 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:latest")
+                    docker.build("${IMAGE_TAG}")
+                }
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
+                        echo "Logged in to Docker Hub"
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
+                        sh "docker push ${IMAGE_TAG}"
+                    }
                 }
             }
         }
@@ -24,13 +46,10 @@ pipeline {
         stage('Run Container for Tests') {
             steps {
                 script {
-                    // Jalankan container di background
                     sh """
                     docker rm -f ${CONTAINER_NAME} || true
-                    docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_NAME}:latest
+                    docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_TAG}
                     """
-
-                    // Tunggu beberapa detik agar app siap
                     sleep 5
                 }
             }
@@ -61,15 +80,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Untuk deploy, kita bisa jalankan container baru dengan image terbaru
-                // (atau push ke registry dan deploy ke server lain sesuai kebutuhan)
                 sh """
                 docker rm -f deployed-app || true
-                docker run -d --name deployed-app -p 5000:5000 ${IMAGE_NAME}:latest
+                docker run -d --name deployed-app -p 5000:5000 ${IMAGE_TAG}
                 """
             }
         }
     }
 }
-
-
