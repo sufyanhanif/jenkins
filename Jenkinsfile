@@ -38,13 +38,13 @@ pipeline {
 
         stage('Acceptance Test') {
             steps {
-                sh "docker exec ${CONTAINER_NAME} python tests/acceptance_test.py"
+                sh "docker exec ${CONTAINER_NAME} python /app/acceptance_test.py"
             }
         }
 
         stage('Smoke Test') {
             steps {
-                sh 'python tests/smoke_test.py'
+                sh 'python /app/smoke_test.py'
             }
         }
 
