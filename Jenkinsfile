@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         LOCAL_IMAGE = "local-image"
-        DOCKER_REPO = "sufyanha/hellow"
+        DOCKER_REPO = "sufyanha/hello-world"
         BUILD_TIMESTAMP = "${new Date().format('yyyyMMddHHmmss')}"
         IMAGE_TAG = "${DOCKER_REPO}:${BUILD_TIMESTAMP}"
         LOCAL_TAG = "${LOCAL_IMAGE}:${BUILD_TIMESTAMP}"
