@@ -44,16 +44,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
-                        sh "docker push ${IMAGE_TAG}"
-                    }
-                }
-            }
-        }
-
+       
         stage('Run Container for Tests') {
             steps {
                 script {
