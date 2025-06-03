@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "hellow-world"
-        CONTAINER_NAME = "jenkins-python-app-container"
+        CONTAINER_NAME = "jenkins-python-app"
     }
 
     stages {
